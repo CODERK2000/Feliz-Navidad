@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .gradient-text {
+      background: linear-gradient(45deg, #FFD700, #FF69B4, #4B0082);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradient 5s ease infinite;
+      background-size: 200% 200%;
+    }
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      animation: rise 3s ease-in forwards;
+    }
+    @keyframes rise {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+    .card {
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      backface-visibility: hidden;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+    }
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    .shine-effect {
+      position: relative;
+      overflow: hidden;
+    }
+    .shine-effect::after {
+      content: '';
+      position: absolute;
+      top: -110%;
+      left: -210%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+    @keyframes shine {
+      to {
+        top: 100%;
+        left: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen flex flex-col items-center justify-center p-4">
+  
+  <!-- Formulario inicial -->
+  <div id="nameForm" class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 mb-8 text-center shadow-2xl transform hover:scale-105 transition-all duration-300 border border-white/20">
+    <div class="mb-6">
+      <h1 class="text-5xl font-bold gradient-text mb-4">2025</h1>
+      <div class="text-white text-xl mb-6">
+        <i class="fas fa-stars mr-2"></i>Tu Año de Brillar
+      </div>
+    </div>
+    <div class="relative mb-6">
+      <input type="text" id="friendName" placeholder="¿Cuál es tu nombre?" 
+             class="w-full px-6 py-4 bg-white/20 border border-white/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/50 text-center text-white placeholder-white/70 backdrop-blur-sm text-lg">
+      <i class="fas fa-sparkles absolute right-4 top-1/2 transform -translate-y-1/2 text-white/50"></i>
+    </div>
+    <button onclick="showCard()" 
+            class="group relative px-8 py-4 bg-white/20 hover:bg-white/30 text-white rounded-2xl transition-all duration-300 shine-effect overflow-hidden">
+      <span class="relative z-10 flex items-center justify-center">
+        <i class="fas fa-wand-magic-sparkles mr-2"></i>
+        Descubre tu mensaje para 2025
+      </span>
+    </button>
+  </div>
+
+  <!-- Tarjeta -->
+  <div id="cardContainer" class="hidden">
+    <div class="card relative w-[380px] h-[580px] cursor-pointer">
+      <!-- Frente -->
+      <div class="card-front rounded-3xl shadow-2xl bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-xl p-8 flex flex-col items-center border border-white/20">
+        <div class="text-7xl mb-6 gradient-text font-bold floating">2025</div>
+        <h1 class="text-3xl font-bold mb-6 text-center text-white">
+          <span id="nameDisplay" class="block mt-3 gradient-text text-2xl"></span>
+          <div class="mt-4">Tu Viaje Comienza</div>
+        </h1>
+        <div class="text-white/80 text-center mb-6">
+          <i class="fas fa-hand-sparkles animate-pulse mr-2"></i>
+          Toca para descubrir tu mensaje especial
+        </div>
+        <div class="relative w-40 h-40 floating">
+          <div class="absolute inset-0 bg-white/10 rounded-full animate-pulse"></div>
+          <div class="absolute inset-0 flex items-center justify-center text-6xl">
+            <i class="fas fa-compass text-white/90"></i>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Reverso -->
+      <div class="card-back rounded-3xl shadow-2xl bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-xl p-8 flex flex-col items-center justify-center border border-white/20">
+        <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/20">
+          <p id="message" class="text-white text-center space-y-4 leading-relaxed">
+            Querido/a <span id="nameDisplay2" class="font-bold gradient-text"></span>,<br><br>
+      
+            <span class="block mb-4">
+              <i class="fas fa-stars text-yellow-400 mr-2"></i>
+              El 2025 será el año en que tu luz interior brillará más que nunca. Cada paso que des te acercará a tus sueños con fuerza y determinación.
+            </span>
+      
+            <span class="block mb-4">
+              <i class="fas fa-rocket text-blue-400 mr-2"></i>
+              Tu pasión será el fuego que ilumine tu camino, y tu coraje la fuerza que te impulse hacia nuevas alturas.
+            </span>
+      
+            <span class="block mb-4">
+              <i class="fas fa-heart text-pink-400 mr-2"></i>
+              Recuerda: eres más fuerte de lo que crees, más capaz de lo que imaginas, y tu luz brilla con un resplandor que no puedes ni empezar a ver.
+            </span>
+      
+            <span class="block gradient-text font-bold mt-6">
+              ¡Este 2025 será tu momento para brillar como nunca antes!
+            </span>
+          </p>
+        </div>
+        <div class="text-4xl mt-6 space-x-4">
+          <i class="fas fa-stars text-yellow-400 floating"></i>
+          <i class="fas fa-moon text-blue-400 floating"></i>
+          <i class="fas fa-sun text-orange-400 floating"></i>
+        </div>
+        <!-- Te Quiero Message -->
+        <div class="absolute bottom-4 w-full text-center">
+          <h1 class="text-6xl font-bold gradient-text animate-pulse">
+            ¡TE QUIERO!
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function createParticle(x, y) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      const icons = ['✨', '⭐', '🌟'];
+      particle.textContent = icons[Math.floor(Math.random() * icons.length)];
+      particle.style.left = x + 'px';
+      particle.style.top = y + 'px';
+      particle.style.fontSize = Math.random() * 15 + 10 + 'px';
+      document.body.appendChild(particle);
+      setTimeout(() => particle.remove(), 3000);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (Math.random() < 0.1) {
+        createParticle(e.clientX, e.clientY);
+      }
+    });
+
+    function showCard() {
+      const name = document.getElementById('friendName').value.trim();
+      if (!name) {
+        gsap.to('#nameForm', {
+          x: [-10, 10, -10, 10, 0],
+          duration: 0.5,
+          ease: 'power2.inOut'
+        });
+        return;
+      }
+
+      gsap.to('#nameForm', {
+        scale: 0,
+        opacity: 0,
+        duration: 0.5,
+        onComplete: () => {
+          document.getElementById('nameForm').style.display = 'none';
+          document.getElementById('cardContainer').style.display = 'block';
+          document.getElementById('nameDisplay').textContent = name;
+          document.getElementById('nameDisplay2').textContent = name;
+
+          gsap.from('#cardContainer', {
+            duration: 2,
+            scale: 0,
+            rotation: 720,
+            opacity: 0,
+            ease: 'elastic.out(1, 0.5)'
+          });
+        }
+      });
+
+      // Crear explosión de partículas
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          createParticle(
+            window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+            window.innerHeight / 2 + (Math.random() - 0.5) * 200
+          );
+        }, i * 100);
+      }
+    }
+
+    const card = document.querySelector('.card');
+    card.addEventListener('click', () => {
+      card.classList.toggle('flipped');
+      
+      if (card.classList.contains('flipped')) {
+        gsap.from('.card-back', {
+          duration: 0.5,
+          scale: 0.8,
+          opacity: 0,
+          delay: 0.3
+        });
+
+        // Crear efecto de partículas al voltear
+        for (let i = 0; i < 10; i++) {
+          setTimeout(() => {
+            createParticle(
+              window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+              window.innerHeight / 2 + (Math.random() - 0.5) * 200
+            );
+          }, i * 100);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
